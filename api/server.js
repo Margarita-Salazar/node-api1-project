@@ -34,8 +34,25 @@ server.get('/api/users/:id', async (req,res)=>{
         })
     }
 })
-server.post('/api/users', (req,res)=>{
-    
+server.post('/api/users', async (req,res)=>{
+    const {name, bio} = req.body
+    try{
+        if(!name || 
+            !name.trim() || 
+            !bio ||
+            !bio.trim()){
+                res.status(400).json({
+                    message: 'Pleas provide name and bio for the user'
+                })
+            }else{
+               const user = await User.insert({name, bio})
+               res.status(201).json(user)
+           }
+    }catch(err){
+        res.json({
+            message: 'There was an error while saving the user to the database'
+        })
+    }
 })
 server.delete('/api/users', (req,res)=>{
     
