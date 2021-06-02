@@ -64,7 +64,7 @@ server.delete('/api/users/:id', async (req,res)=>{
             })
         }else{
             const userRemoved = await User.remove(id)
-            res.json({message: 'user was deleted', userRemoved})
+            res.json(userRemoved)
         }
     }catch(err){
         res.status(500).json({
@@ -77,22 +77,24 @@ server.put('/api/users/:id', async (req,res)=>{
     const {name, bio} = req.body
     const user = await User.findById(id)
     try{
-        if(!user){
-            res.status(404).json({
-                message: 'The user with the specified ID does not exist'
-            })
-        }else{
-            if(!name || 
-                !name.trim() || 
-                !bio ||
-                !bio.trim()){
-                    res.status(400).json({
-                        message: 'Please provide name and bio for the user'
+        if(!name || 
+           !name.trim() ||
+           !bio ||
+           !bio.trim())
+           {
+                res.status(400).json({
+                    message: 'Please provide name and bio for the user'
+                })
+            }else{
+                if(!user){
+                    res.status(404).json({
+                        message: 'The user with the specified ID does not exist'
                     })
                 }else{
-                   const user = await User.update(id, {name, bio})
-                   res.status(200).json(user)
-               }
+                        const user = await User.update(id, {name, bio})
+                        res.status(200).json(user)
+                    }
+                        
         }
     }catch(err){
         res.status(500).json({
